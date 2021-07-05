@@ -14,8 +14,10 @@
 	var body = document.getElementsByTagName("HTML")[0].innerHTML;
 	var body = body.replaceAll('%'+'22', '"').replaceAll('%'+'28', '(').replaceAll('%'+'29', ')').replaceAll('%'+'5D', ']').replaceAll('%'+'5B', '[').replaceAll('%'+'20', ' ').replaceAll('%'+'3A', ':').replaceAll('%'+'7B', '{').replaceAll('%'+'7D', '}').replaceAll('%'+'2C', ',').replaceAll('%'+'3D', '=').replaceAll('%'+'2F', '/').replaceAll('%'+'3F', '?').replaceAll('%'+'5C', '\\').replaceAll('%'+'25', '%').replaceAll('%'+'2C', ',').replaceAll('\\u0026', '&').replaceAll('%'+'26', '&').replaceAll('%'+'3B', ';').replaceAll('%'+'22', '"').replaceAll('%'+'28', '(').replaceAll('%'+'29', ')').replaceAll('%'+'5D', ']').replaceAll('%'+'5B', '[').replaceAll('%'+'20', ' ').replaceAll('%'+'3A', ':').replaceAll('%'+'7B', '{').replaceAll('%'+'7D', '}').replaceAll('%'+'2C', ',').replaceAll('%'+'3D', '=').replaceAll('%'+'2F', '/').replaceAll('%'+'3F', '?').replaceAll('%'+'5C', '\\').replaceAll('%'+'25', '%').replaceAll('%'+'2C', ',').replaceAll('\\u0026', '&').replaceAll('%'+'26', '&').replaceAll('%'+'3B', ';');
 	var urls = body.split('"formats":')[1].split(',"adaptiveFormats"')[0];
+	var adaptiveUrls = body.split('"adaptiveFormats":')[1].split('},"playerAds":')[0];
 	try {
 		var urls = JSON.parse(urls);
+		var adaptiveUrls = JSON.parse(adaptiveUrls);
 	} catch(e) {
 		alert('error, Please check for an update. If it still does not work, please open an issue');
 		if (confirm('Do you want to open github?')) {
@@ -26,7 +28,21 @@
 	};
 	var blobData = '';
 	for (var i=0; i<urls.length; i++) {
-		blobData += '<p>Quality: ' +urls[i].qualityLabel +'; fps: ' + urls[i].fps +'; Mimetype: ' +urls[i].mimeType.split(';')[0] +'; Url: <a target="_blank" href="' +urls[i].url +'">Click to Open</a></p>\n\n';
+		blobData += '<p>Quality: ' +urls[i].qualityLabel + '; fps: ' + urls[i].fps + '; Mimetype: ' +urls[i].mimeType.split(';')[0] + '; Url: <a target="_blank" href="' + urls[i].url + '">Click to Open</a></p>\n\n';
+	};
+	blobData += '\n\n\n';
+	blobData += 'No Audio';
+	for (var i=0; i<adaptiveUrls.length; i++) {
+		if (adaptiveUrls[i].mimeType.split('/')[0] == 'video') {
+			blobData += '<p>Quality: ' + adaptiveUrls[i].qualityLabel + '; fps: ' + adaptiveUrls[i].fps + '; Mimetype: ' + adaptiveUrls[i].mimeType.split(';')[0] + '; Url: <a target="_blank" href="' + adaptiveUrls[i].url + '">Click to Open</a></p>\n\n';
+		}
+	};
+	blobData += '\n\n\n';
+	blobData += 'Only Audio';
+	for (var i=0; i<adaptiveUrls.length; i++) {
+		if (adaptiveUrls[i].mimeType.split('/')[0] == 'audio') {
+			blobData += '<p>Bitrate: ' + adaptiveUrls[i].bitrate + '; Mimetype: ' + adaptiveUrls[i].mimeType.split(';')[0] + '; Url: <a target="_blank" href="' + adaptiveUrls[i].url + '">Click to Open</a></p>\n\n';
+		}
 	};
 	var blobData = new TextEncoder('utf-8').encode(blobData).buffer;
 	var blob = new Blob([blobData], {type : 'text/html'});
@@ -48,8 +64,10 @@
 	};
 	var body = document.getElementsByTagName("HTML")[0].innerHTML;
 	var urls = body.split('"formats":')[1].split(',"adaptiveFormats"')[0];
+	var adaptiveUrls = body.split('"adaptiveFormats":')[1].split('},"playerAds":')[0];
 	try {
 		var urls = JSON.parse(urls);
+		var adaptiveUrls = JSON.parse(adaptiveUrls);
 	} catch(e) {
 		alert('error, Please check for an update. If it still does not work, please open an issue');
 		if (confirm('Do you want to open github?')) {
@@ -60,7 +78,21 @@
 	};
 	var blobData = '';
 	for (var i=0; i<urls.length; i++) {
-		blobData += '<p>Quality: ' +urls[i].qualityLabel +'; fps: ' + urls[i].fps +'; Mimetype: ' +urls[i].mimeType.split(';')[0] +'; Url: <a target="_blank" href="' +urls[i].url +'">Click to Open</a></p>\n\n';
+		blobData += '<p>Quality: ' +urls[i].qualityLabel + '; fps: ' + urls[i].fps + '; Mimetype: ' +urls[i].mimeType.split(';')[0] + '; Url: <a target="_blank" href="' + urls[i].url + '">Click to Open</a></p>\n\n';
+	};
+	blobData += '\n\n\n';
+	blobData += 'No Audio';
+	for (var i=0; i<adaptiveUrls.length; i++) {
+		if (adaptiveUrls[i].mimeType.split('/')[0] == 'video') {
+			blobData += '<p>Quality: ' + adaptiveUrls[i].qualityLabel + '; fps: ' + adaptiveUrls[i].fps + '; Mimetype: ' + adaptiveUrls[i].mimeType.split(';')[0] + '; Url: <a target="_blank" href="' + adaptiveUrls[i].url + '">Click to Open</a></p>\n\n';
+		}
+	};
+	blobData += '\n\n\n';
+	blobData += 'Only Audio';
+	for (var i=0; i<adaptiveUrls.length; i++) {
+		if (adaptiveUrls[i].mimeType.split('/')[0] == 'audio') {
+			blobData += '<p>Bitrate: ' + adaptiveUrls[i].bitrate + '; Mimetype: ' + adaptiveUrls[i].mimeType.split(';')[0] + '; Url: <a target="_blank" href="' + adaptiveUrls[i].url + '">Click to Open</a></p>\n\n';
+		}
 	};
 	var blobData = new TextEncoder('utf-8').encode(blobData).buffer;
 	var blob = new Blob([blobData], {type : 'text/html'});
