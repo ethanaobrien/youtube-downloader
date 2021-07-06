@@ -7,6 +7,8 @@ https://ethanaobrien.github.io/youtube-downloader/index.html
 <p>I do not affiliate with youtube in ANY WAY. This tool is provided to you but I do not choose what you do with it.</p>
 <p>Downloading videos that contain copyrighted content is not allowed</p>
 
+If you have issues downloading (like no response from the page) please refresh the page and try again. This is BETA software.
+
 Changelog
 
 Version 0.5
