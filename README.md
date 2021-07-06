@@ -10,15 +10,18 @@ https://ethanaobrien.github.io/youtube-downloader/index.html
 Changelog
 
 Version 0.5
-	Inital Release
+<ul><li>Inital Release</li></ul>
+<br>
 
 Version 0.6
-	Added beta support for older versions of chrome
-	Added support for youtube videos with ads
+<ul><li>Added beta support for older versions of chrome</li>
+<li>Added support for youtube videos with ads</li></ul>
+<br>
 
 Version 0.7
-	Bug Fix
+<ul><li>Bug Fix</li></ul>
+<br>
 
-Version 0.8 - FIRST 100% STABLE RELEASE
-	Added Official Support for older versions of chrome
-	Added checking for updates
+Version 0.8 (FIRST 100% STABLE RELEASE)
+<ul><li>Added Official Support for older versions of chrome</li>
+<li>Added checking for updates</li></ul>
