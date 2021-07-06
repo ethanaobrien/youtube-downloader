@@ -37,8 +37,6 @@
 		return
 	};
 	var blobData = '';
-	console.log(urls)
-	console.log(adaptiveUrls)
 	for (var i=0; i<urls.length; i++) {
 		blobData += '<p>Quality: ' +urls[i].qualityLabel + '; fps: ' + urls[i].fps + '; Mimetype: ' +urls[i].mimeType.split(';')[0] + '; Url: <a target="_blank" href="' + urls[i].url + '">Click to Open</a></p>\n\n';
 	};
@@ -99,8 +97,6 @@
 		return
 	};
 	var blobData = '';
-	console.log(urls)
-	console.log(adaptiveUrls)
 	for (var i=0; i<urls.length; i++) {
 		blobData += '<p>Quality: ' +urls[i].qualityLabel + '; fps: ' + urls[i].fps + '; Mimetype: ' +urls[i].mimeType.split(';')[0] + '; Url: <a target="_blank" href="' + urls[i].url + '">Click to Open</a></p>\n\n';
 	};
