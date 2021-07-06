@@ -14,7 +14,13 @@
 	var body = document.getElementsByTagName("HTML")[0].innerHTML;
 	var body = body.replaceAll('%'+'22', '"').replaceAll('%'+'28', '(').replaceAll('%'+'29', ')').replaceAll('%'+'5D', ']').replaceAll('%'+'5B', '[').replaceAll('%'+'20', ' ').replaceAll('%'+'3A', ':').replaceAll('%'+'7B', '{').replaceAll('%'+'7D', '}').replaceAll('%'+'2C', ',').replaceAll('%'+'3D', '=').replaceAll('%'+'2F', '/').replaceAll('%'+'3F', '?').replaceAll('%'+'5C', '\\').replaceAll('%'+'25', '%').replaceAll('%'+'2C', ',').replaceAll('\\u0026', '&').replaceAll('%'+'26', '&').replaceAll('%'+'3B', ';').replaceAll('%'+'22', '"').replaceAll('%'+'28', '(').replaceAll('%'+'29', ')').replaceAll('%'+'5D', ']').replaceAll('%'+'5B', '[').replaceAll('%'+'20', ' ').replaceAll('%'+'3A', ':').replaceAll('%'+'7B', '{').replaceAll('%'+'7D', '}').replaceAll('%'+'2C', ',').replaceAll('%'+'3D', '=').replaceAll('%'+'2F', '/').replaceAll('%'+'3F', '?').replaceAll('%'+'5C', '\\').replaceAll('%'+'25', '%').replaceAll('%'+'2C', ',').replaceAll('\\u0026', '&').replaceAll('%'+'26', '&').replaceAll('%'+'3B', ';');
 	var urls = body.split('"formats":')[1].split(',"adaptiveFormats"')[0];
-	var adaptiveUrls = body.split('"adaptiveFormats":')[1].split('},"playerAds":')[0];
+	if (body.split('"adaptiveFormats":')[1].split(',"dashManifestUrl"').length > 1) {
+		var toSplit = ',"dashManifestUrl"'
+	} else {
+		var toSplit = '},"playerAds":'
+	}
+	var adaptiveUrls = body.split('"adaptiveFormats":')[1].split(toSplit)[0];
+	
 	try {
 		var urls = JSON.parse(urls);
 		var adaptiveUrls = JSON.parse(adaptiveUrls);
@@ -26,7 +32,13 @@
 		console.log('error, Please check for an update here: https://github.com/ethanaobrien/youtube-downloader. If it still does not work, please open an issue');
 		return
 	};
+	if (urls.length > 0 && ! urls[0].url) {
+		alert('Unsupported URL - The URL is encrypted');
+		return
+	};
 	var blobData = '';
+	console.log(urls)
+	console.log(adaptiveUrls)
 	for (var i=0; i<urls.length; i++) {
 		blobData += '<p>Quality: ' +urls[i].qualityLabel + '; fps: ' + urls[i].fps + '; Mimetype: ' +urls[i].mimeType.split(';')[0] + '; Url: <a target="_blank" href="' + urls[i].url + '">Click to Open</a></p>\n\n';
 	};
@@ -64,7 +76,13 @@
 	};
 	var body = document.getElementsByTagName("HTML")[0].innerHTML;
 	var urls = body.split('"formats":')[1].split(',"adaptiveFormats"')[0];
-	var adaptiveUrls = body.split('"adaptiveFormats":')[1].split('},"playerAds":')[0];
+	if (body.split('"adaptiveFormats":')[1].split(',"dashManifestUrl"').length > 1) {
+		var toSplit = ',"dashManifestUrl"'
+	} else {
+		var toSplit = '},"playerAds":'
+	}
+	var adaptiveUrls = body.split('"adaptiveFormats":')[1].split(toSplit)[0];
+	
 	try {
 		var urls = JSON.parse(urls);
 		var adaptiveUrls = JSON.parse(adaptiveUrls);
@@ -76,7 +94,13 @@
 		console.log('error, Please check for an update here: https://github.com/ethanaobrien/youtube-downloader. If it still does not work, please open an issue');
 		return
 	};
+	if (urls.length > 0 && ! urls[0].url) {
+		alert('Unsupported URL - The URL is encrypted');
+		return
+	};
 	var blobData = '';
+	console.log(urls)
+	console.log(adaptiveUrls)
 	for (var i=0; i<urls.length; i++) {
 		blobData += '<p>Quality: ' +urls[i].qualityLabel + '; fps: ' + urls[i].fps + '; Mimetype: ' +urls[i].mimeType.split(';')[0] + '; Url: <a target="_blank" href="' + urls[i].url + '">Click to Open</a></p>\n\n';
 	};
