@@ -9,6 +9,12 @@ https://ethanaobrien.github.io/youtube-downloader/index.html
 
 If you have issues downloading (like no response from the page) please refresh the page and try again. This is BETA software.
 
+How it works:
+
+When the YouTube page loads, it uses a certain window variable to load the song, however, this varaible is only set if the video was the first thing loaded, which makes things complicated.
+
+
+
 Changelog
 
 Version 0.5
