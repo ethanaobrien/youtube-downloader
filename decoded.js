@@ -34,7 +34,7 @@
 				window.open('https://github.com/ethanaobrien/youtube-downloader');
 			};
 		};
-		var blobData = '<p>YouTube Downloader Version 1.0</p>\n\n<p>Title: ' + videoTitle + '</p>\n\n';
+		var blobData = '<p>YouTube Downloader Version 1.1</p>\n\n<p>Title: ' + videoTitle + '</p>\n\n';
 		for (var i=0; i<urls.length; i++) {
 			blobData += '<p>Quality: ' +urls[i].qualityLabel + '; fps: ' + urls[i].fps + '; Mimetype: ' +urls[i].mimeType.split(';')[0] + '; Url: <a target="_blank" href="' + urls[i].url + '">Open</a></p>\n\n';
 		};
@@ -61,9 +61,9 @@
 			if (response.ok) {
 				response.text().then(body => {
 					var version = JSON.parse(body);
-					var usingVersion = '1.0';
+					var usingVersion = '1.1';
 					if (usingVersion != version.current_version) {
-						alert('You have version '+usingVersion+' but the newest version is ' + current_version);
+						alert('You have version '+usingVersion+' but the newest version is ' + version.current_version);
 						if (confirm('Do you want to update? (Github Pages will open)')) {
 							window.open('https://ethanaobrien.github.io/youtube-downloader/index.html');
 						};
@@ -88,14 +88,16 @@
 			if (response.ok) {
 				response.text().then(body => {
 					var body = body.replaceAll('%'+'22', '"').replaceAll('%'+'28', '(').replaceAll('%'+'29', ')').replaceAll('%'+'5D', ']').replaceAll('%'+'5B', '[').replaceAll('%'+'20', ' ').replaceAll('%'+'3A', ':').replaceAll('%'+'7B', '{').replaceAll('%'+'7D', '}').replaceAll('%'+'2C', ',').replaceAll('%'+'3D', '=').replaceAll('%'+'2F', '/').replaceAll('%'+'3F', '?').replaceAll('%'+'5C', '\\').replaceAll('%'+'25', '%').replaceAll('%'+'2C', ',').replaceAll('\\u0026', '&').replaceAll('%'+'26', '&').replaceAll('%'+'3B', ';').replaceAll('%'+'22', '"').replaceAll('%'+'28', '(').replaceAll('%'+'29', ')').replaceAll('%'+'5D', ']').replaceAll('%'+'5B', '[').replaceAll('%'+'20', ' ').replaceAll('%'+'3A', ':').replaceAll('%'+'7B', '{').replaceAll('%'+'7D', '}').replaceAll('%'+'2C', ',').replaceAll('%'+'3D', '=').replaceAll('%'+'2F', '/').replaceAll('%'+'3F', '?').replaceAll('%'+'5C', '\\').replaceAll('%'+'25', '%').replaceAll('%'+'2C', ',').replaceAll('\\u0026', '&').replaceAll('%'+'26', '&').replaceAll('%'+'3B', ';');
-					var body = body.split('var ytInitialPlayerResponse = ').pop().split(';var meta = document.createElement')[0];
-					try {
-						var info = JSON.parse(body);
-					} catch(e) {
-						alert('Please reload page and try again');
-						return
+					var scriptPt1 = body.split('<script' + body.split('var ytInitialPlayerResponse = ')[0].split('<script').pop() + 'var ytInitialPlayerResponse = ')[1].split('</script>')[0];
+					if (scriptPt1.split('var meta = ').length > 1) {
+						var scriptPt1 = scriptPt1.split('var meta = ')[0];
 					};
-					gotVideoInfo(info)
+					if (scriptPt1.endsWith(';')) {
+						var scriptPt1 = scriptPt1.substring(0, scriptPt1.length - 1);
+					};
+					var sd = scriptPt1.split('"streamingData":')[1];
+					var info = {streamingData: JSON.parse(sd.split('}]},')[0]+'}]}'), videoDetails: {title: body.split('<title').pop().split('>')[1].split('</title>')[0].split(' - YouTube')[0]}};
+					gotVideoInfo(info);
 				});
 			} else {
 				alert('Please reload page and try again')

@@ -33,3 +33,6 @@ Version 0.9
 
 Version 1.0
 <ul><li>Large bug fix</li></ul>
+
+Version 1.1
+<ul><li>Large bug fix</li></ul>
