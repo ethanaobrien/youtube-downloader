@@ -24,6 +24,9 @@ Version 0.7
 <ul><li>Bug Fix</li></ul>
 <br>
 
-Version 0.8 (FIRST 100% STABLE RELEASE)
+Version 0.8
 <ul><li>Added Official Support for older versions of chrome</li>
 <li>Added checking for updates</li></ul>
+
+Version 0.9
+<ul><li>Fixed bug where when the user clicked on another video, it would try to read the inital video</li></ul>
