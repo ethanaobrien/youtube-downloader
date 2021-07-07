@@ -30,3 +30,6 @@ Version 0.8
 
 Version 0.9
 <ul><li>Fixed bug where when the user clicked on another video, it would try to read the inital video</li></ul>
+
+Version 1.0
+<ul><li>Large bug fix</li></ul>

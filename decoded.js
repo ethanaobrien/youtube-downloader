@@ -34,7 +34,7 @@
 				window.open('https://github.com/ethanaobrien/youtube-downloader');
 			};
 		};
-		var blobData = '<p>YouTube Downloader Version 0.9</p>\n\n<p>Title: ' + videoTitle + '</p>\n\n';
+		var blobData = '<p>YouTube Downloader Version 1.0</p>\n\n<p>Title: ' + videoTitle + '</p>\n\n';
 		for (var i=0; i<urls.length; i++) {
 			blobData += '<p>Quality: ' +urls[i].qualityLabel + '; fps: ' + urls[i].fps + '; Mimetype: ' +urls[i].mimeType.split(';')[0] + '; Url: <a target="_blank" href="' + urls[i].url + '">Open</a></p>\n\n';
 		};
@@ -61,7 +61,7 @@
 			if (response.ok) {
 				response.text().then(body => {
 					var version = JSON.parse(body);
-					var usingVersion = '0.9';
+					var usingVersion = '1.0';
 					if (usingVersion != version.current_version) {
 						alert('You have version '+usingVersion+' but the newest version is ' + current_version);
 						if (confirm('Do you want to update? (Github Pages will open)')) {
@@ -73,25 +73,15 @@
 		});
 	} catch(e) {
 		console.log('[ytdl] failed to check for updates')
-	}
-	if (ytInitialPlayerResponse) {
+	};
+	if (typeof ytInitialPlayerResponse != 'undefined') {
 		var info = ytInitialPlayerResponse;
-	} else if (window.ytInitialPlayerResponse) {
+	} else if (typeof window.ytInitialPlayerResponse != 'undefined') {
 		var info = window.ytInitialPlayerResponse;
 	} else {
-		var body = document.getElementsByTagName("HTML")[0].innerHTML;
-		var body = body.replaceAll('%'+'22', '"').replaceAll('%'+'28', '(').replaceAll('%'+'29', ')').replaceAll('%'+'5D', ']').replaceAll('%'+'5B', '[').replaceAll('%'+'20', ' ').replaceAll('%'+'3A', ':').replaceAll('%'+'7B', '{').replaceAll('%'+'7D', '}').replaceAll('%'+'2C', ',').replaceAll('%'+'3D', '=').replaceAll('%'+'2F', '/').replaceAll('%'+'3F', '?').replaceAll('%'+'5C', '\\').replaceAll('%'+'25', '%').replaceAll('%'+'2C', ',').replaceAll('\\u0026', '&').replaceAll('%'+'26', '&').replaceAll('%'+'3B', ';').replaceAll('%'+'22', '"').replaceAll('%'+'28', '(').replaceAll('%'+'29', ')').replaceAll('%'+'5D', ']').replaceAll('%'+'5B', '[').replaceAll('%'+'20', ' ').replaceAll('%'+'3A', ':').replaceAll('%'+'7B', '{').replaceAll('%'+'7D', '}').replaceAll('%'+'2C', ',').replaceAll('%'+'3D', '=').replaceAll('%'+'2F', '/').replaceAll('%'+'3F', '?').replaceAll('%'+'5C', '\\').replaceAll('%'+'25', '%').replaceAll('%'+'2C', ',').replaceAll('\\u0026', '&').replaceAll('%'+'26', '&').replaceAll('%'+'3B', ';');
-		var body = body.split('var ytInitialPlayerResponse = ').pop().split(';var meta = document.createElement')[0];
-		try {
-			var info = JSON.parse(body);
-		} catch(e) {
-			alert('error, Please check for an update. If it still does not work, please open an issue');
-			if (confirm('Do you want to open github?')) {
-				window.open('https://github.com/ethanaobrien/youtube-downloader')
-			};
-			console.log('error, Please check for an update here: https://github.com/ethanaobrien/youtube-downloader. If it still does not work, please open an issue');
-			return
-		};	
+		var info = { };
+		info.videoDetails = { };
+		info.videoDetails.videoId = undefined;
 	};
 	if (videoID != info.videoDetails.videoId) {
 		fetch(ytlink).then(response => {
