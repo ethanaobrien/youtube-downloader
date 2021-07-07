@@ -96,7 +96,12 @@
 						var scriptPt1 = scriptPt1.substring(0, scriptPt1.length - 1);
 					};
 					var sd = scriptPt1.split('"streamingData":')[1];
-					var info = {streamingData: JSON.parse(sd.split('}]},')[0]+'}]}'), videoDetails: {title: body.split('<title').pop().split('>')[1].split('</title>')[0].split(' - YouTube')[0]}};
+					try {
+						var info = {streamingData: JSON.parse(sd.split('}]},')[0]+'}]}'), videoDetails: {title: body.split('<title').pop().split('>')[1].split('</title>')[0].split(' - YouTube')[0]}};
+					} catch(e) {
+						alert('Please reload page and try again')
+						return
+					}
 					gotVideoInfo(info);
 				});
 			} else {
