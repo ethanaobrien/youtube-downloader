@@ -39,4 +39,4 @@ Version 1.1
 
 Version 1.2
 <ul><li>More Reliable Method of getting video info</li>
-<li>Embedded <a href'https://gist.github.com/jogerj/c9e839647c23f991cd30fcddc9b2f14c'>this</a> to support (when on a channel) to open the members only playlist</li></ul>
+<li>Embedded https://gist.github.com/jogerj/c9e839647c23f991cd30fcddc9b2f14c to support (when on a channel) to open the members only playlist</li></ul>
