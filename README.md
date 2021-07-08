@@ -9,12 +9,6 @@ https://ethanaobrien.github.io/youtube-downloader/index.html
 
 If you have issues downloading (like no response from the page) please refresh the page and try again. This is BETA software.
 
-How it works:
-
-When the YouTube page loads, it uses a certain window variable to load the song, however, this varaible is only set if the video was the first thing loaded, which makes things complicated.
-
-
-
 Changelog
 
 Version 0.5
@@ -42,3 +36,7 @@ Version 1.0
 
 Version 1.1
 <ul><li>Large bug fix</li></ul>
+
+Version 1.2
+<ul><li>More Reliable Method of getting video info</li>
+<li>Embedded <a href'https://gist.github.com/jogerj/c9e839647c23f991cd30fcddc9b2f14c'>this</a> to support (when on a channel) to open the members only playlist</li></ul>
