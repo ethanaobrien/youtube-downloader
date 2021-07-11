@@ -5,7 +5,7 @@
         alert('[ytdl] Only works on youtube');
         return
     };
-    if (ytlink.split('v=').length == 1 && ytlink.split('channel').length == 1 && ytlink.split('/c/').length == 1) {
+    if (ytlink.split('v=').length == 1 && ytlink.split('/channel/').length == 1 && ytlink.split('/c/').length == 1 && ytlink.split('/user/').length == 1 ) {
         alert('[ytdl] Please open a video');
         return
     };
@@ -58,6 +58,10 @@
         };
     };
     function gotVideoInfo(info) {
+        if (! info.streamingData) {
+            alert('[ytdl] This video requires membership');
+            return
+        };
         var urls = info.streamingData.formats;
         var adaptiveUrls = info.streamingData.adaptiveFormats;
         var videoTitle = info.videoDetails.title;
@@ -77,7 +81,7 @@
                 window.open('https://github.com/ethanaobrien/youtube-downloader');
             };
         };
-        var blobData = '<p>YouTube Downloader Version 1.2</p>\n\n<p>Title: ' + videoTitle + '</p>\n\n';
+        var blobData = '<p>YouTube Downloader Version 1.3</p>\n\n<p>Title: ' + videoTitle + '</p>\n\n';
         for (var i=0; i<urls.length; i++) {
             blobData += '<p>Quality: ' +urls[i].qualityLabel + '; fps: ' + urls[i].fps + '; Mimetype: ' +urls[i].mimeType.split(';')[0] + '; Url: <a target="_blank" href="' + urls[i].url + '">Open</a></p>\n\n';
         };
@@ -104,7 +108,7 @@
             if (response.ok) {
                 response.text().then(body => {
                     var version = JSON.parse(body);
-                    var usingVersion = '1.2';
+                    var usingVersion = '1.3';
                     if (usingVersion != version.current_version) {
                         alert('[ytdl] You have version '+usingVersion+' but the newest version is ' + version.current_version);
                         if (confirm('[ytdl] Do you want to update? (Github Pages will open)')) {
@@ -152,7 +156,7 @@
                     if (! scriptPt1.endsWith(';')) {
                         var scriptPt1 = scriptPt1 + ';';
                     };
-                    gotVideoInfo(eval('(function() {var ytInitialPlayerResponse = ' + scriptPt1 + ' return ytInitialPlayerResponse})();'));
+                    gotVideoInfo(eval('(function() {return ' + scriptPt1 + '})();'));
                 });
             } else {
                 alert('[ytdl] Please reload page and try again')
