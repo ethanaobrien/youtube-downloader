@@ -43,3 +43,7 @@ Version 1.2
 
 Version 1.3
 <ul><li>Minor Changes</li></ul>
+
+Version 1.4
+<ul><li>Support For Playlists</li>
+<li>Better Error Catching</li></ul>
