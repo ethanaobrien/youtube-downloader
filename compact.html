@@ -1,0 +1,10 @@
+<textarea id='text'></textarea>
+<button onclick='compact()'>Compact</button>
+<textarea id='out'></textarea>
+<script>
+function compact() {
+	var a = document.getElementById('text').value
+	var a = a.replaceAll('\t', '').replaceAll('\n', '').replaceAll('    ', '').replaceAll(' += ', '+=').replaceAll(' = ', '=')
+	document.getElementById('out').value = encodeURIComponent(a)
+}
+</script>
