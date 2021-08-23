@@ -4,7 +4,8 @@
 <script>
 function compact() {
 	var a = document.getElementById('text').value
-	var a = a.replaceAll('\t', '').replaceAll('    ', '').replaceAll(' += ', '+=').replaceAll(' = ', '=')
+	var a = a.replaceAll('\t', '').replaceAll('    ', '').replaceAll(' += ', '+=').replaceAll(' = ', '=').replaceAll('\n', '')
+	/**
 	var a = a.split('\n')
 	for (var i=0; i<a.length; a++) {
 		if (! a[i].replaceAll(' ', '').endsWith('{') && ! a[i].replaceAll(' ', '').endsWith(';')) {
@@ -12,6 +13,7 @@ function compact() {
 		}
 	}
 	var a = a.join('')
+	*/
 	document.getElementById('out').value = encodeURIComponent(a)
 }
 </script>
