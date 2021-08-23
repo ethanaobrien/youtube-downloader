@@ -11,6 +11,7 @@ function compact() {
 			a[i] = a[i] + ';'
 		}
 	}
+	var a = a.join('')
 	document.getElementById('out').value = encodeURIComponent(a)
 }
 </script>
