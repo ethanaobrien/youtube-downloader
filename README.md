@@ -47,3 +47,7 @@ Version 1.3
 Version 1.4
 <ul><li>Support For Playlists</li>
 <li>Better Error Catching</li></ul>
+
+Version 1.5
+<ul><li>Clean Playlist UI</li>
+<li>Better Playlist grabbing</li></ul>
