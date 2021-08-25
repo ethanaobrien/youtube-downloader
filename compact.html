@@ -3,17 +3,6 @@
 <textarea id='out'></textarea>
 <script>
 function compact() {
-	var a = document.getElementById('text').value
-	var a = a.replaceAll('\t', '').replaceAll('    ', '').replaceAll('\n', '')
-	/**
-	var a = a.split('\n')
-	for (var i=0; i<a.length; a++) {
-		if (! a[i].replaceAll(' ', '').endsWith('{') && ! a[i].replaceAll(' ', '').endsWith(';')) {
-			a[i] = a[i] + ';'
-		}
-	}
-	var a = a.join('')
-	*/
-	document.getElementById('out').value = encodeURIComponent(a)
+	document.getElementById('out').value = encodeURIComponent(document.getElementById('text').value.replaceAll('\t', '').replaceAll('    ', '').replaceAll('\n', ''))
 }
 </script>
