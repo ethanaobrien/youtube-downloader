@@ -1,88 +1,92 @@
-(function() {
+(async function() {
     var ytlink = window.location.href;
     var videoID = ytlink.split('v=').pop().split('&')[0];
-    if (window.location.host != 'www.youtube.com') {
+    if (window.location.host != 'www.youtube.com' && window.location.host != 'youtube.com') {
         alert('[ytdl] Only works on youtube');
-        return
+        return;
     };
     if (ytlink.split('v=').length == 1 && ytlink.split('/channel/').length == 1 && ytlink.split('/c/').length == 1 && ytlink.split('/user/').length == 1 && ytlink.split('list=').length == 1) {
         alert('[ytdl] Please open a video');
         return
     };
+	function error(e) {
+		console.error(e);
+		alert('[ytdl] Please reload page and try again');
+	};
     async function playlist(id) {
-        var mainPage = await fetch('https://www.youtube.com/playlist?list=' + id);
-        var body = await mainPage.text();
         try {
+			var mainPage = await fetch('https://www.youtube.com/playlist?list=' + id);
+			var body = await mainPage.text();
             var pageInfo = body.split('<script' + body.split('var ytInitialData = ')[0].split('<script').pop() + 'var ytInitialData = ')[1].split('</script>')[0];
             var pageInfo = eval('(function() {return ' + pageInfo + '})();');
             var info = pageInfo.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].playlistVideoListRenderer.contents;
         } catch(e) {
-            console.error(e);
-            alert('[ytdl] Please reload page and try again');
+            error(e);
             return;
         };
         var baseURL = 'https://www.youtube.com/watch?v=';
-        var blobData = '<p>YouTube Downloader Version 1.5</p>\n\n<p>Title: ' + pageInfo.metadata.playlistMetadataRenderer.title + '</p>\n\n';
+        var blobData = '<p>YouTube Downloader Version 1.6</p>\n\n<p>Title: ' + pageInfo.metadata.playlistMetadataRenderer.title + '</p>\n\n';
         blobData += '<style>diz {width: 119px; border: solid 1px; float: left; padding: 10px 0;}</style>\n';
         blobData += '<script>function updateUI(e) {var a=document.getElementsByName("a");var b=document.getElementsByName("b");var c=document.getElementsByName("c");for (var i=0; i<a.length; i++) {if (e == "a") {a[i].style="display:block;";} else {a[i].style="display:none;";};};for (var i=0; i<b.length; i++) {if (e == "b") {b[i].style="display:block;";} else {b[i].style="display:none;";};};for (var i=0; i<c.length; i++) {if (e == "c") {c[i].style="display:block;";} else {c[i].style="display:none;";};};};function updateUIa() {updateUI("a")};function updateUIb() {updateUI("b")};function updateUIc() {updateUI("c")};</script>\n';
         blobData += '<nav style="text-align: center;"><a href="javascript:void(0);" onClick="javascript:updateUIa()"><diz>Video & Audio</diz></a><a href="javascript:void(0);" onClick="javascript:updateUIb()"><diz>Only Video</diz></a><a href="javascript:void(0);" onClick="javascript:updateUIc()"><diz>Only Audio</diz></a></nav>\n<br><br><br>\n';
         for (var q=0; q<info.length; q++) {
             var error = false;
+			var videoNum = q + 1;
             try {
                 var page = await fetch(baseURL + info[q].playlistVideoRenderer.videoId);
                 var body = await page.text();
                 var body = body.split('<script' + body.split('var ytInitialPlayerResponse = ')[0].split('<script').pop() + 'var ytInitialPlayerResponse = ')[1].split('</script>')[0];
                 var pageInfo = eval('(function() {return ' + body + '})();');
+				var urls = pageInfo.streamingData.formats;
+				var adaptiveUrls = pageInfo.streamingData.adaptiveFormats;
+				var videoTitle = pageInfo.videoDetails.title;
             } catch(e) {
                 var error = true;
-                blobData += '<p>error fetching or parsing</p>';
+                blobData += '<p>Video ' + videoNum + ': error fetching or parsing data</p>';
             };
             if (! error) {
-                var urls = pageInfo.streamingData.formats;
-                var adaptiveUrls = pageInfo.streamingData.adaptiveFormats;
-                var videoTitle = pageInfo.videoDetails.title;
-                if (urls.length > 0 ) {
-                    if (! urls[0].url) {
-                        blobData += 'This video contains copyrighted content';
-                        var error = true;
-                    };
-                } else if (adaptiveUrls.length > 0) {
-                    if (! adaptiveUrls[0].url) {
-                        blobData += 'This video contains copyrighted content';
-                        var error = true;
-                    };
-                } else {
-                    blobData += 'No URL\'s found for this video';
-                    var error = true;
-                };
-                if (! error) {
-                    blobData += '<p>' + videoTitle + '</p>\n';
-                    blobData += '<div name="a">';
-                    for (var i=0; i<urls.length; i++) {
-                        blobData += '<p>Quality: ' +urls[i].qualityLabel + '; fps: ' + urls[i].fps + '; Mimetype: ' +urls[i].mimeType.split(';')[0] + '; Url: <a target="_blank" href="' + urls[i].url + '">Open</a></p>\n';
-                    };
-                    blobData += '</div>\n';
-                    blobData += '<div name="b" style="display:none;">';
-                    blobData += '\n';
-                    for (var i=0; i<adaptiveUrls.length; i++) {
-                        if (adaptiveUrls[i].mimeType.split('/')[0] == 'video') {
-                            blobData += '<p>Quality: ' + adaptiveUrls[i].qualityLabel + '; fps: ' + adaptiveUrls[i].fps + '; Mimetype: ' + adaptiveUrls[i].mimeType.split(';')[0] + '; Url: <a target="_blank" href="' + adaptiveUrls[i].url + '">Open</a></p>\n';
-                        };
-                    };
-                    blobData += '</div>\n';
-                    blobData += '<div name="c" style="display:none;">';
-                    blobData += '\n';
-                    for (var i=0; i<adaptiveUrls.length; i++) {
-                        if (adaptiveUrls[i].mimeType.split('/')[0] == 'audio') {
-                            blobData += '<p>Bitrate: ' + adaptiveUrls[i].bitrate + '; Mimetype: ' + adaptiveUrls[i].mimeType.split(';')[0] + '; Url: <a target="_blank" href="' + adaptiveUrls[i].url + '">Open</a></p>\n';
-                        };
-                    };
-                    blobData += '</div>\n';
-                    blobData += '<br>';
-                };
-            };
+				blobData += '<p>Video ' + videoNum + ': ' + videoTitle + '</p>\n';
+				if (urls.length > 0 ) {
+					if (! urls[0].url) {
+						blobData += '<p>This video contains copyrighted content</p>\n';
+						var error = true;
+					};
+				} else if (adaptiveUrls.length > 0) {
+					if (! adaptiveUrls[0].url) {
+						blobData += '<p>This video contains copyrighted content</p>\n';
+						var error = true;
+					};
+				} else {
+					blobData += 'No URL\'s found for this video';
+					var error = true;
+				};
+				if (! error) {
+					blobData += '<div name="a">';
+					for (var i=0; i<urls.length; i++) {
+						blobData += '<p>Quality: ' +urls[i].qualityLabel + '; fps: ' + urls[i].fps + '; Mimetype: ' +urls[i].mimeType.split(';')[0] + '; Url: <a target="_blank" href="' + urls[i].url + '">Open</a></p>\n';
+					};
+					blobData += '</div>\n';
+					blobData += '<div name="b" style="display:none;">';
+					blobData += '\n';
+					for (var i=0; i<adaptiveUrls.length; i++) {
+						if (adaptiveUrls[i].mimeType.split('/')[0] == 'video') {
+							blobData += '<p>Quality: ' + adaptiveUrls[i].qualityLabel + '; fps: ' + adaptiveUrls[i].fps + '; Mimetype: ' + adaptiveUrls[i].mimeType.split(';')[0] + '; Url: <a target="_blank" href="' + adaptiveUrls[i].url + '">Open</a></p>\n';
+						};
+					};
+					blobData += '</div>\n';
+					blobData += '<div name="c" style="display:none;">';
+					blobData += '\n';
+					for (var i=0; i<adaptiveUrls.length; i++) {
+						if (adaptiveUrls[i].mimeType.split('/')[0] == 'audio') {
+							blobData += '<p>Bitrate: ' + adaptiveUrls[i].bitrate + '; Mimetype: ' + adaptiveUrls[i].mimeType.split(';')[0] + '; Url: <a target="_blank" href="' + adaptiveUrls[i].url + '">Open</a></p>\n';
+						};
+					};
+					blobData += '</div>\n';
+					blobData += '<br>';
+				};
+			};
         };
-        window.open(URL.createObjectURL(new Blob([blobData], {type : 'text/html'})), "Download", "width=600,height=600");
+        window.open(URL.createObjectURL(new Blob([blobData], {type : 'text/html; chartset=utf-8'})), "Download", "width=600,height=600");
     };
     async function membersOnlyPlaylist(){
             const channelId = await async function () {
@@ -137,9 +141,14 @@
             alert('[ytdl] This video requires membership');
             return
         };
-        var urls = info.streamingData.formats;
-        var adaptiveUrls = info.streamingData.adaptiveFormats;
-        var videoTitle = info.videoDetails.title;
+		try {
+			var urls = info.streamingData.formats;
+			var adaptiveUrls = info.streamingData.adaptiveFormats;
+			var videoTitle = info.videoDetails.title;
+		} catch(e) {
+			error(e);
+			return;
+		};
         if (urls.length > 0 ) {
             if (! urls[0].url) {
                 alert('[ytdl] This video contains copyrighted content');
@@ -157,7 +166,7 @@
             };
             return;
         };
-        var blobData = '<p>YouTube Downloader Version 1.5</p>\n\n<p>Title: ' + videoTitle + '</p>\n\n';
+        var blobData = '<p>YouTube Downloader Version 1.6</p>\n\n<p>Title: ' + videoTitle + '</p>\n\n';
         for (var i=0; i<urls.length; i++) {
             blobData += '<p>Quality: ' +urls[i].qualityLabel + '; fps: ' + urls[i].fps + '; Mimetype: ' +urls[i].mimeType.split(';')[0] + '; Url: <a target="_blank" href="' + urls[i].url + '">Open</a></p>\n\n';
         };
@@ -178,43 +187,42 @@
         var blob = new Blob([blobData], {type : 'text/html'});
         window.open(URL.createObjectURL(blob), "Download", "width=600,height=600");
     };
-    try {
-        fetch('https://raw.githack.com/ethanaobrien/youtube-downloader/main/version.json').then(response => {
-            if (response.ok) {
-                response.text().then(body => {
-                    var usingVersion = '1.5';
-                    var version = JSON.parse(body);
-                    if (usingVersion != version.current_version) {
-                        alert('[ytdl] You have version '+usingVersion+' but the newest version is ' + version.current_version);
-                        if (confirm('[ytdl] Do you want to update? (Github Pages will open)')) {
-                            window.open('https://ethanaobrien.github.io/youtube-downloader/index.html');
-                        };
-                    };
-                });
-            };
-        });
-    } catch(e) {
-        console.log('[ytdl] failed to check for updates')
-    };
+	(async function() {
+		try {
+			var response = await fetch('https://raw.githack.com/ethanaobrien/youtube-downloader/main/version.json');
+			var body = await response.text();
+			var usingVersion = '1.6';
+			var version = JSON.parse(body);
+		} catch(e) {
+			error(e);
+			return;
+		};
+		if (usingVersion < version.current_version) {
+			alert('[ytdl] You have version '+usingVersion+' but the newest version is ' + version.current_version);
+			if (confirm('[ytdl] Do you want to update? (Github Pages will open)')) {
+				window.open('https://ethanaobrien.github.io/youtube-downloader/index.html');
+			};
+		};
+	})();
     if (ytlink.split('v=').length == 1) {
         if (ytlink.split('list=').length != 1) {
             playlist(ytlink.split('list=').pop().split('&')[0]);
             return;
         }
         membersOnlyPlaylist();
-        return
+        return;
     };
-    if (typeof getPageData != 'undefined' && typeof getPageData == 'function') {
+    if (typeof getPageData == 'function') {
         var info = getPageData().data.playerResponse;
-        if (info && info != 'undefined') {
+        if (info && info != 'undefined' && videoID == info.videoDetails.videoId) {
             gotVideoInfo(info);
-            return
+            return;
         };
-    } else if (typeof window.getPageData != 'undefined' && typeof window.getPageData == 'function') {
+    } else if (typeof window.getPageData == 'function') {
         var info = getPageData().data.playerResponse;
-        if (info && info != 'undefined') {
+        if (info && info != 'undefined' && videoID == info.videoDetails.videoId) {
             gotVideoInfo(info);
-            return
+            return;
         };
     };
     if (typeof ytInitialPlayerResponse != 'undefined') {
@@ -225,22 +233,15 @@
         var info = {videoDetails:{videoId:undefined}};
     };
     if (videoID != info.videoDetails.videoId) {
-        fetch(ytlink).then(response => {
-            if (response.ok) {
-                response.text().then(body => {
-                    try {
-                        var scriptPt1 = body.split('<script' + body.split('var ytInitialPlayerResponse = ')[0].split('<script').pop() + 'var ytInitialPlayerResponse = ')[1].split('</script>')[0];
-                        gotVideoInfo(eval('(function() {return ' + scriptPt1 + '})();'));
-                    } catch(e) {
-                        console.error(e);
-                        alert('[ytdl] Please reload page and try again');
-                        return;
-                    }
-                });
-            } else {
-                alert('[ytdl] Please reload page and try again')
-            };
-        });
+		try {
+			var body = await response.text();
+			var response = await fetch(ytlink);
+			var scriptPt1 = body.split('<script' + body.split('var ytInitialPlayerResponse = ')[0].split('<script').pop() + 'var ytInitialPlayerResponse = ')[1].split('</script>')[0];
+			gotVideoInfo(eval('(function() {return ' + scriptPt1 + '})();'));
+		} catch(e) {
+			error(e);
+			return;
+		};
     } else {
         gotVideoInfo(info)
     };
