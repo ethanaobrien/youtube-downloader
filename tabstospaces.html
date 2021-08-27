@@ -1,0 +1,8 @@
+<textarea id='text'></textarea>
+<button onclick='compact()'>Compact</button>
+<textarea id='out'></textarea>
+<script>
+function compact() {
+	document.getElementById('out').value = document.getElementById('text').value.replaceAll('\t', '    ')
+}
+</script>
