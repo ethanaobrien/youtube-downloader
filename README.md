@@ -58,3 +58,6 @@ Version 1.6
 Version 1.7
 <ul><li>Support encrypted URLs</li>
 <li>Added download button (not supported with adaptive Urls)</li></ul>
+
+Version 1.8
+<ul><li>Enhanced playlist support</li></ul>
