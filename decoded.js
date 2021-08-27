@@ -9,14 +9,14 @@
         alert('[ytdl] Please open a video');
         return
     };
-	function error(e) {
-		console.error(e);
-		alert('[ytdl] Please reload page and try again');
-	};
+    function error(e) {
+        console.error(e);
+        alert('[ytdl] Please reload page and try again');
+    };
     async function playlist(id) {
         try {
-			var mainPage = await fetch('https://www.youtube.com/playlist?list=' + id);
-			var body = await mainPage.text();
+            var mainPage = await fetch('https://www.youtube.com/playlist?list=' + id);
+            var body = await mainPage.text();
             var pageInfo = body.split('<script' + body.split('var ytInitialData = ')[0].split('<script').pop() + 'var ytInitialData = ')[1].split('</script>')[0];
             var pageInfo = eval('(function() {return ' + pageInfo + '})();');
             var info = pageInfo.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].playlistVideoListRenderer.contents;
@@ -31,60 +31,60 @@
         blobData += '<nav style="text-align: center;"><a href="javascript:void(0);" onClick="javascript:updateUIa()"><diz>Video & Audio</diz></a><a href="javascript:void(0);" onClick="javascript:updateUIb()"><diz>Only Video</diz></a><a href="javascript:void(0);" onClick="javascript:updateUIc()"><diz>Only Audio</diz></a></nav>\n<br><br><br>\n';
         for (var q=0; q<info.length; q++) {
             var error = false;
-			var videoNum = q + 1;
+            var videoNum = q + 1;
             try {
                 var page = await fetch(baseURL + info[q].playlistVideoRenderer.videoId);
                 var body = await page.text();
                 var body = body.split('<script' + body.split('var ytInitialPlayerResponse = ')[0].split('<script').pop() + 'var ytInitialPlayerResponse = ')[1].split('</script>')[0];
                 var pageInfo = eval('(function() {return ' + body + '})();');
-				var urls = pageInfo.streamingData.formats;
-				var adaptiveUrls = pageInfo.streamingData.adaptiveFormats;
-				var videoTitle = pageInfo.videoDetails.title;
+                var urls = pageInfo.streamingData.formats;
+                var adaptiveUrls = pageInfo.streamingData.adaptiveFormats;
+                var videoTitle = pageInfo.videoDetails.title;
             } catch(e) {
                 var error = true;
                 blobData += '<p>Video ' + videoNum + ': error fetching or parsing data</p>';
             };
             if (! error) {
-				blobData += '<p>Video ' + videoNum + ': ' + videoTitle + '</p>\n';
-				if (urls.length > 0 ) {
-					if (! urls[0].url) {
-						blobData += '<p>This video contains copyrighted content</p>\n';
-						var error = true;
-					};
-				} else if (adaptiveUrls.length > 0) {
-					if (! adaptiveUrls[0].url) {
-						blobData += '<p>This video contains copyrighted content</p>\n';
-						var error = true;
-					};
-				} else {
-					blobData += 'No URL\'s found for this video';
-					var error = true;
-				};
-				if (! error) {
-					blobData += '<div name="a">';
-					for (var i=0; i<urls.length; i++) {
-						blobData += '<p>Quality: ' +urls[i].qualityLabel + '; fps: ' + urls[i].fps + '; Mimetype: ' +urls[i].mimeType.split(';')[0] + '; Url: <a target="_blank" href="' + urls[i].url + '">Open</a></p>\n';
-					};
-					blobData += '</div>\n';
-					blobData += '<div name="b" style="display:none;">';
-					blobData += '\n';
-					for (var i=0; i<adaptiveUrls.length; i++) {
-						if (adaptiveUrls[i].mimeType.split('/')[0] == 'video') {
-							blobData += '<p>Quality: ' + adaptiveUrls[i].qualityLabel + '; fps: ' + adaptiveUrls[i].fps + '; Mimetype: ' + adaptiveUrls[i].mimeType.split(';')[0] + '; Url: <a target="_blank" href="' + adaptiveUrls[i].url + '">Open</a></p>\n';
-						};
-					};
-					blobData += '</div>\n';
-					blobData += '<div name="c" style="display:none;">';
-					blobData += '\n';
-					for (var i=0; i<adaptiveUrls.length; i++) {
-						if (adaptiveUrls[i].mimeType.split('/')[0] == 'audio') {
-							blobData += '<p>Bitrate: ' + adaptiveUrls[i].bitrate + '; Mimetype: ' + adaptiveUrls[i].mimeType.split(';')[0] + '; Url: <a target="_blank" href="' + adaptiveUrls[i].url + '">Open</a></p>\n';
-						};
-					};
-					blobData += '</div>\n';
-					blobData += '<br>';
-				};
-			};
+                blobData += '<p>Video ' + videoNum + ': ' + videoTitle + '</p>\n';
+                if (urls.length > 0 ) {
+                    if (! urls[0].url) {
+                        blobData += '<p>This video contains copyrighted content</p>\n';
+                        var error = true;
+                    };
+                } else if (adaptiveUrls.length > 0) {
+                    if (! adaptiveUrls[0].url) {
+                        blobData += '<p>This video contains copyrighted content</p>\n';
+                        var error = true;
+                    };
+                } else {
+                    blobData += 'No URL\'s found for this video';
+                    var error = true;
+                };
+                if (! error) {
+                    blobData += '<div name="a">';
+                    for (var i=0; i<urls.length; i++) {
+                        blobData += '<p>Quality: ' +urls[i].qualityLabel + '; fps: ' + urls[i].fps + '; Mimetype: ' +urls[i].mimeType.split(';')[0] + '; Url: <a target="_blank" href="' + urls[i].url + '">Open</a></p>\n';
+                    };
+                    blobData += '</div>\n';
+                    blobData += '<div name="b" style="display:none;">';
+                    blobData += '\n';
+                    for (var i=0; i<adaptiveUrls.length; i++) {
+                        if (adaptiveUrls[i].mimeType.split('/')[0] == 'video') {
+                            blobData += '<p>Quality: ' + adaptiveUrls[i].qualityLabel + '; fps: ' + adaptiveUrls[i].fps + '; Mimetype: ' + adaptiveUrls[i].mimeType.split(';')[0] + '; Url: <a target="_blank" href="' + adaptiveUrls[i].url + '">Open</a></p>\n';
+                        };
+                    };
+                    blobData += '</div>\n';
+                    blobData += '<div name="c" style="display:none;">';
+                    blobData += '\n';
+                    for (var i=0; i<adaptiveUrls.length; i++) {
+                        if (adaptiveUrls[i].mimeType.split('/')[0] == 'audio') {
+                            blobData += '<p>Bitrate: ' + adaptiveUrls[i].bitrate + '; Mimetype: ' + adaptiveUrls[i].mimeType.split(';')[0] + '; Url: <a target="_blank" href="' + adaptiveUrls[i].url + '">Open</a></p>\n';
+                        };
+                    };
+                    blobData += '</div>\n';
+                    blobData += '<br>';
+                };
+            };
         };
         window.open(URL.createObjectURL(new Blob([blobData], {type : 'text/html; chartset=utf-8'})), "Download", "width=600,height=600");
     };
@@ -141,14 +141,14 @@
             alert('[ytdl] This video requires membership');
             return
         };
-		try {
-			var urls = info.streamingData.formats;
-			var adaptiveUrls = info.streamingData.adaptiveFormats;
-			var videoTitle = info.videoDetails.title;
-		} catch(e) {
-			error(e);
-			return;
-		};
+        try {
+            var urls = info.streamingData.formats;
+            var adaptiveUrls = info.streamingData.adaptiveFormats;
+            var videoTitle = info.videoDetails.title;
+        } catch(e) {
+            error(e);
+            return;
+        };
         if (urls.length > 0 ) {
             if (! urls[0].url) {
                 alert('[ytdl] This video contains copyrighted content');
@@ -187,23 +187,23 @@
         var blob = new Blob([blobData], {type : 'text/html'});
         window.open(URL.createObjectURL(blob), "Download", "width=600,height=600");
     };
-	(async function() {
-		try {
-			var response = await fetch('https://raw.githack.com/ethanaobrien/youtube-downloader/main/version.json');
-			var body = await response.text();
-			var usingVersion = '1.6';
-			var version = JSON.parse(body);
-		} catch(e) {
-			error(e);
-			return;
-		};
-		if (usingVersion < version.current_version) {
-			alert('[ytdl] You have version '+usingVersion+' but the newest version is ' + version.current_version);
-			if (confirm('[ytdl] Do you want to update? (Github Pages will open)')) {
-				window.open('https://ethanaobrien.github.io/youtube-downloader/index.html');
-			};
-		};
-	})();
+    (async function() {
+        try {
+            var response = await fetch('https://raw.githack.com/ethanaobrien/youtube-downloader/main/version.json');
+            var body = await response.text();
+            var usingVersion = '1.6';
+            var version = JSON.parse(body);
+        } catch(e) {
+            error(e);
+            return;
+        };
+        if (usingVersion < version.current_version) {
+            alert('[ytdl] You have version '+usingVersion+' but the newest version is ' + version.current_version);
+            if (confirm('[ytdl] Do you want to update? (Github Pages will open)')) {
+                window.open('https://ethanaobrien.github.io/youtube-downloader/index.html');
+            };
+        };
+    })();
     if (ytlink.split('v=').length == 1) {
         if (ytlink.split('list=').length != 1) {
             playlist(ytlink.split('list=').pop().split('&')[0]);
@@ -233,15 +233,15 @@
         var info = {videoDetails:{videoId:undefined}};
     };
     if (videoID != info.videoDetails.videoId) {
-		try {
-			var body = await response.text();
-			var response = await fetch(ytlink);
-			var scriptPt1 = body.split('<script' + body.split('var ytInitialPlayerResponse = ')[0].split('<script').pop() + 'var ytInitialPlayerResponse = ')[1].split('</script>')[0];
-			gotVideoInfo(eval('(function() {return ' + scriptPt1 + '})();'));
-		} catch(e) {
-			error(e);
-			return;
-		};
+        try {
+            var response = await fetch(ytlink);
+            var body = await response.text();
+            var scriptPt1 = body.split('<script' + body.split('var ytInitialPlayerResponse = ')[0].split('<script').pop() + 'var ytInitialPlayerResponse = ')[1].split('</script>')[0];
+            gotVideoInfo(eval('(function() {return ' + scriptPt1 + '})();'));
+        } catch(e) {
+            error(e);
+            return;
+        };
     } else {
         gotVideoInfo(info)
     };
