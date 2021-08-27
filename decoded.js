@@ -9,11 +9,11 @@
         alert('[ytdl] Please open a video');
         return
     };
-    if (! String.prototype.replaceAll) {
-        String.prototype.replaceAll = function(a, b) {
-            return this.split(a).join(b);
-        };
-    };
+	if (! String.prototype.replaceAll) {
+		String.prototype.replaceAll = function(a, b) {
+			return this.split(a).join(b);
+		};
+	};
     function error(e) {
         console.error(e);
         alert('[ytdl] Please reload page and try again');
@@ -66,17 +66,23 @@
             };
             if (! error) {
                 blobData += '<p>Video ' + videoNum + ': ' + videoTitle + '</p>\n';
+                var hasEncrypted = false;
                 for (var i=0; i<urls.length; i++) {
                     var a = urls[i].cipher || urls[i].signatureCipher;
                     if (a) {
+                        var hasEncrypted = true;
                         urls[i].url = decryptURL(a);
                     };
                 };
                 for (var i=0; i<adaptiveUrls.length; i++) {
                     var a = adaptiveUrls[i].cipher || adaptiveUrls[i].signatureCipher;
                     if (a) {
+                        var hasEncrypted = true;
                         adaptiveUrls[i].url = decryptURL(a);
                     };
+                };
+                if (hasEncrypted) {
+                    blobData += '\n<p>URLs may not work, report an issue if it does not work.</p>\n';
                 };
                 if (! error) {
                     blobData += '<div name="a">';
@@ -168,19 +174,25 @@ videoTitle.replaceAll(' ', '+') + '">Download</a></p>\n';
             error(e);
             return;
         };
+        var hasEncrypted = false;
         for (var i=0; i<urls.length; i++) {
             var a = urls[i].cipher || urls[i].signatureCipher;
             if (a) {
+                var hasEncrypted = true;
                 urls[i].url = decryptURL(a);
             };
         };
         for (var i=0; i<adaptiveUrls.length; i++) {
             var a = adaptiveUrls[i].cipher || adaptiveUrls[i].signatureCipher;
             if (a) {
+                var hasEncrypted = true;
                 adaptiveUrls[i].url = decryptURL(a);
             };
         };
         var blobData = '<p>YouTube Downloader Version 1.7</p>\n\n<p>Title: ' + videoTitle + '</p>\n\n';
+        if (hasEncrypted) {
+            blobData += '<p>URLs may not work, report an issue if it does not work.</p>\n';
+        };
         for (var i=0; i<urls.length; i++) {
             blobData += '<p>Quality: ' +urls[i].qualityLabel + '; fps: ' + urls[i].fps + '; Mimetype: ' +urls[i].mimeType.split(';')[0] + '; Url: <a target="_blank" href="' + urls[i].url + '">Open</a> <a target="_blank" href="' + urls[i].url + '&title=' +
 videoTitle.replaceAll(' ', '+') + '">Download</a></p>\n\n';
