@@ -9,9 +9,29 @@
         alert('[ytdl] Please open a video');
         return
     };
+    if (! String.prototype.replaceAll) {
+        String.prototype.replaceAll = function(a, b) {
+            return this.split(a).join(b);
+        };
+    };
     function error(e) {
         console.error(e);
         alert('[ytdl] Please reload page and try again');
+    };
+    function decryptURL(e) {
+        var jG = function(a){a.reverse()};
+        var F3 = function(a,b){a.splice(0,b)};
+        var Wp = function(a,b){var c=a[0];a[0]=a[b%a.length];a[b%a.length]=c};
+        var decryptSig = function(a){a=a.split("");F3(a,3);Wp(a,4);F3(a,2);jG(a,35);F3(a,1);Wp(a,37);F3(a,3);return a.join("")};
+        var url = e.split('&');
+        var a = { };
+        for (var i=0; i<url.length; i++) {
+            var b = url[i].split('=');
+            a[b[0]] = b[1];
+        };
+        a.s = decodeURIComponent(a.s);
+        a.url = decodeURIComponent(a.url);
+        return a.url + '&' + a.sp + '=' + decryptSig(a.s);
     };
     async function playlist(id) {
         try {
@@ -25,7 +45,7 @@
             return;
         };
         var baseURL = 'https://www.youtube.com/watch?v=';
-        var blobData = '<p>YouTube Downloader Version 1.6</p>\n\n<p>Title: ' + pageInfo.metadata.playlistMetadataRenderer.title + '</p>\n\n';
+        var blobData = '<p>YouTube Downloader Version 1.7</p>\n\n<p>Title: ' + pageInfo.metadata.playlistMetadataRenderer.title + '</p>\n\n';
         blobData += '<style>diz {width: 119px; border: solid 1px; float: left; padding: 10px 0;}</style>\n';
         blobData += '<script>function updateUI(e) {var a=document.getElementsByName("a");var b=document.getElementsByName("b");var c=document.getElementsByName("c");for (var i=0; i<a.length; i++) {if (e == "a") {a[i].style="display:block;";} else {a[i].style="display:none;";};};for (var i=0; i<b.length; i++) {if (e == "b") {b[i].style="display:block;";} else {b[i].style="display:none;";};};for (var i=0; i<c.length; i++) {if (e == "c") {c[i].style="display:block;";} else {c[i].style="display:none;";};};};function updateUIa() {updateUI("a")};function updateUIb() {updateUI("b")};function updateUIc() {updateUI("c")};</script>\n';
         blobData += '<nav style="text-align: center;"><a href="javascript:void(0);" onClick="javascript:updateUIa()"><diz>Video & Audio</diz></a><a href="javascript:void(0);" onClick="javascript:updateUIb()"><diz>Only Video</diz></a><a href="javascript:void(0);" onClick="javascript:updateUIc()"><diz>Only Audio</diz></a></nav>\n<br><br><br>\n';
@@ -46,24 +66,23 @@
             };
             if (! error) {
                 blobData += '<p>Video ' + videoNum + ': ' + videoTitle + '</p>\n';
-                if (urls.length > 0 ) {
-                    if (! urls[0].url) {
-                        blobData += '<p>This video contains copyrighted content</p>\n';
-                        var error = true;
+                for (var i=0; i<urls.length; i++) {
+                    var a = urls[i].cipher || urls[i].signatureCipher;
+                    if (a) {
+                        urls[i].url = decryptURL(a);
                     };
-                } else if (adaptiveUrls.length > 0) {
-                    if (! adaptiveUrls[0].url) {
-                        blobData += '<p>This video contains copyrighted content</p>\n';
-                        var error = true;
+                };
+                for (var i=0; i<adaptiveUrls.length; i++) {
+                    var a = adaptiveUrls[i].cipher || adaptiveUrls[i].signatureCipher;
+                    if (a) {
+                        adaptiveUrls[i].url = decryptURL(a);
                     };
-                } else {
-                    blobData += 'No URL\'s found for this video';
-                    var error = true;
                 };
                 if (! error) {
                     blobData += '<div name="a">';
                     for (var i=0; i<urls.length; i++) {
-                        blobData += '<p>Quality: ' +urls[i].qualityLabel + '; fps: ' + urls[i].fps + '; Mimetype: ' +urls[i].mimeType.split(';')[0] + '; Url: <a target="_blank" href="' + urls[i].url + '">Open</a></p>\n';
+                        blobData += '<p>Quality: ' +urls[i].qualityLabel + '; fps: ' + urls[i].fps + '; Mimetype: ' +urls[i].mimeType.split(';')[0] + '; Url: <a target="_blank" href="' + urls[i].url + '">Open</a> <a target="_blank" href="' + urls[i].url + '&title=' +
+videoTitle.replaceAll(' ', '+') + '">Download</a></p>\n';
                     };
                     blobData += '</div>\n';
                     blobData += '<div name="b" style="display:none;">';
@@ -149,26 +168,22 @@
             error(e);
             return;
         };
-        if (urls.length > 0 ) {
-            if (! urls[0].url) {
-                alert('[ytdl] This video contains copyrighted content');
-                return
-            };
-        } else if (adaptiveUrls.length > 0) {
-            if (! adaptiveUrls[0].url) {
-                alert('[ytdl] This video contains copyrighted content');
-                return
-            };
-        } else {
-            alert('[ytdl] No URLs have been found (How is this possible)');
-            if (confirm('[ytdl] Do you want to open github?')) {
-                window.open('https://github.com/ethanaobrien/youtube-downloader');
-            };
-            return;
-        };
-        var blobData = '<p>YouTube Downloader Version 1.6</p>\n\n<p>Title: ' + videoTitle + '</p>\n\n';
         for (var i=0; i<urls.length; i++) {
-            blobData += '<p>Quality: ' +urls[i].qualityLabel + '; fps: ' + urls[i].fps + '; Mimetype: ' +urls[i].mimeType.split(';')[0] + '; Url: <a target="_blank" href="' + urls[i].url + '">Open</a></p>\n\n';
+            var a = urls[i].cipher || urls[i].signatureCipher;
+            if (a) {
+                urls[i].url = decryptURL(a);
+            };
+        };
+        for (var i=0; i<adaptiveUrls.length; i++) {
+            var a = adaptiveUrls[i].cipher || adaptiveUrls[i].signatureCipher;
+            if (a) {
+                adaptiveUrls[i].url = decryptURL(a);
+            };
+        };
+        var blobData = '<p>YouTube Downloader Version 1.7</p>\n\n<p>Title: ' + videoTitle + '</p>\n\n';
+        for (var i=0; i<urls.length; i++) {
+            blobData += '<p>Quality: ' +urls[i].qualityLabel + '; fps: ' + urls[i].fps + '; Mimetype: ' +urls[i].mimeType.split(';')[0] + '; Url: <a target="_blank" href="' + urls[i].url + '">Open</a> <a target="_blank" href="' + urls[i].url + '&title=' +
+videoTitle.replaceAll(' ', '+') + '">Download</a></p>\n\n';
         };
         blobData += '\n\n\n';
         blobData += 'No Audio';
@@ -191,7 +206,7 @@
         try {
             var response = await fetch('https://raw.githack.com/ethanaobrien/youtube-downloader/main/version.json');
             var body = await response.text();
-            var usingVersion = '1.6';
+            var usingVersion = '1.7';
             var version = JSON.parse(body);
         } catch(e) {
             error(e);
