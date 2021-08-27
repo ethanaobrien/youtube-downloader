@@ -1,5 +1,4 @@
 (async function() {
-    alert('a');
     var ytlink = window.location.href;
     var videoID = ytlink.split('v=').pop().split('&')[0];
     if (window.location.host != 'www.youtube.com' && window.location.host != 'youtube.com') {
