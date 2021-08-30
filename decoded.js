@@ -152,7 +152,8 @@ videoTitle.replaceAll(' ', '+') + '">Download</a></p>\n';
                 };
             };
         };
-        window.open(URL.createObjectURL(new Blob([blobData], {type : 'text/html; chartset=utf-8'})), "Download", "width=600,height=600");
+        var BOM = new Uint8Array([0xEF,0xBB,0xBF]);
+        window.open(URL.createObjectURL(new Blob([BOM, blobData], {type : 'text/html; chartset=utf-8'})), "Download", "width=600,height=600");
     };
     async function membersOnlyPlaylist(){
             const channelId = await async function () {
@@ -252,7 +253,8 @@ videoTitle.replaceAll(' ', '+') + '">Download</a></p>\n\n';
                 blobData += '<p>Bitrate: ' + adaptiveUrls[i].bitrate + '; Mimetype: ' + adaptiveUrls[i].mimeType.split(';')[0] + '; Url: <a target="_blank" href="' + adaptiveUrls[i].url + '">Open</a></p>\n\n';
             };
         };
-        var blob = new Blob([blobData], {type : 'text/html'});
+        var BOM = new Uint8Array([0xEF,0xBB,0xBF]);
+        var blob = new Blob([BOM, blobData], {type : 'text/html'});
         window.open(URL.createObjectURL(blob), "Download", "width=600,height=600");
     };
     (async function() {
