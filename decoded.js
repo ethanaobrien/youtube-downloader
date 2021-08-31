@@ -86,7 +86,7 @@
             return;
         };
         var baseURL = 'https://www.youtube.com/watch?v=';
-        var blobData = '<p>YouTube Downloader Version 1.8</p>\n\n<p>Title: ' + pageInfo.metadata.playlistMetadataRenderer.title + '</p>\n\n';
+        var blobData = '<p>YouTube Downloader Version 1.9</p>\n\n<p>Title: ' + pageInfo.metadata.playlistMetadataRenderer.title + '</p>\n\n';
         blobData += '<style>diz {width: 119px; border: solid 1px; float: left; padding: 10px 0;}</style>\n';
         blobData += '<script>function updateUI(e) {var a=document.getElementsByName("a");var b=document.getElementsByName("b");var c=document.getElementsByName("c");for (var i=0; i<a.length; i++) {if (e == "a") {a[i].style="display:block;";} else {a[i].style="display:none;";};};for (var i=0; i<b.length; i++) {if (e == "b") {b[i].style="display:block;";} else {b[i].style="display:none;";};};for (var i=0; i<c.length; i++) {if (e == "c") {c[i].style="display:block;";} else {c[i].style="display:none;";};};};function updateUIa() {updateUI("a")};function updateUIb() {updateUI("b")};function updateUIc() {updateUI("c")};</script>\n';
         blobData += '<nav style="text-align: center;"><a href="javascript:void(0);" onClick="javascript:updateUIa()"><diz>Video & Audio</diz></a><a href="javascript:void(0);" onClick="javascript:updateUIb()"><diz>Only Video</diz></a><a href="javascript:void(0);" onClick="javascript:updateUIc()"><diz>Only Audio</diz></a></nav>\n<br><br><br>\n';
@@ -231,7 +231,7 @@ videoTitle.replaceAll(' ', '+') + '">Download</a></p>\n';
                 adaptiveUrls[i].url = await decryptURL(a);
             };
         };
-        var blobData = '<p>YouTube Downloader Version 1.8</p>\n\n<p>Title: ' + videoTitle + '</p>\n\n';
+        var blobData = '<p>YouTube Downloader Version 1.9</p>\n\n<p>Title: ' + videoTitle + '</p>\n\n';
         if (hasEncrypted) {
             blobData += '<p>URLs may not work, report an issue if it does not work.</p>\n';
         };
@@ -261,7 +261,7 @@ videoTitle.replaceAll(' ', '+') + '">Download</a></p>\n\n';
         try {
             var response = await fetch('https://raw.githack.com/ethanaobrien/youtube-downloader/main/version.json');
             var body = await response.text();
-            var usingVersion = '1.8';
+            var usingVersion = '1.9';
             var version = JSON.parse(body);
         } catch(e) {
             error(e);
