@@ -61,3 +61,6 @@ Version 1.7
 
 Version 1.8
 <ul><li>Enhanced playlist support</li></ul>
+
+Version 1.9
+<ul><li>Fixed multi Byte Characters in html</li></ul>
