@@ -64,6 +64,3 @@ Version 1.8
 
 Version 1.9
 <ul><li>Fixed multi Byte Characters in html</li></ul>
-
-Version 2.0
-<ul><li>New (better) method to get video URLs (Old method is still used in backup cases)</li></ul>
