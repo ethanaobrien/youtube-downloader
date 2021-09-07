@@ -1,6 +1,0 @@
-var videoID = 'KPgmeNstLa8'
-var body = '{"context":{"client":{"hl":"en","gl":"US","deviceMake":"","deviceModel":"","visitorData":"","userAgent":"","clientName":"WEB","clientVersion":"2.20210903.05.01","osName":"","osVersion":"","originalUrl":"https://www.youtube.com/watch?v=' + videoID + '","platform":"DESKTOP","clientFormFactor":"UNKNOWN_FORM_FACTOR","timeZone":"","userInterfaceTheme":"USER_INTERFACE_THEME_LIGHT","clientScreen":"WATCH","mainAppWebInfo":{"graftUrl":"/watch?v=' + videoID + '","webDisplayMode":"WEB_DISPLAY_MODE_BROWSER","isWebNativeShareAvailable":true}},"user":{"lockedSafetyMode":false},"request":{"useSsl":true,"internalExperimentFlags":[],"consistencyTokenJars":[]}},"videoId":"' + videoID + '","playbackContext":{"contentPlaybackContext":{"currentUrl":"/watch?v=' + videoID + '","vis":0,"splay":false,"autoCaptionsDefaultOn":false,"autonavState":"STATE_NONE","html5Preference":"HTML5_PREF_WANTS","signatureTimestamp":18872,"referer":"https://www.youtube.com/","lactMilliseconds":"-1"}},"racyCheckOk":false,"contentCheckOk":false}'
-fetch('https://www.youtube.com/youtubei/v1/player?key=AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8', {method: "POST", body: body}).then(response => response.text()).then(function(e) {
-    console.log(JSON.parse(e))
-    
-})
