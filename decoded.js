@@ -183,9 +183,9 @@ videoTitle.replaceAll(' ', '+') + '">Download</a></p>\n';
             } catch (_) {};
         }();
         if (channelId) {
-            window.open(`https://www.youtube.com/playlist?list=UUMO${channelId.substr(2, 22)}`, "_blank");
+            window.open('https://www.youtube.com/playlist?list=UUMO'+channelId.substr(2, 22), "_blank");
         } else {
-            console.log(`[MEMBERSHIP PLAYLIST REDIRECT] Cannot get channel ID on ${location.href}`);
+            console.log('[MEMBERSHIP PLAYLIST REDIRECT] Cannot get channel ID on '+location.href);
             var chanId = function () {
                 if (
                     window.hasOwnProperty('ytInitialPlayerResponse') &&
@@ -206,7 +206,7 @@ videoTitle.replaceAll(' ', '+') + '">Download</a></p>\n';
                 return id;
             }();
             if (chanId === undefined) {
-                console.warn(`Could not find a channel ID at ${location.href}`);
+                console.warn('Could not find a channel ID at '+location.href);
             } else {
                 console.log('Going to membership playlist URL');
                 window.open('https://www.youtube.com/playlist?list=UUMO' + chanId.substring(channelId.length-22), '_blank');
