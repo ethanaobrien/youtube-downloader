@@ -5,7 +5,7 @@
         alert('[ytdl] Only works on youtube');
         return;
     };
-    if (ytlink.split('v=').length == 1 && ytlink.split('/channel/').length == 1 && ytlink.split('/c/').length == 1 && ytlink.split('/user/').length == 1 && ytlink.split('list=').length == 1) {
+    if (!ytlink.includes('v=') && !ytlink.includes('/channel/') && !ytlink.includes('/c/') && !ytlink.includes('/user/') && !ytlink.includes('list=')) {
         alert('[ytdl] Please open a video');
         return
     };
@@ -65,7 +65,7 @@
             window.decryptSig = u.mainFunc;
         };
         var url = e.split('&');
-        var a = { };
+        var a = {};
         for (var i=0; i<url.length; i++) {
             var b = url[i].split('=');
             a[b[0]] = b[1];
@@ -75,6 +75,8 @@
         return a.url + '&' + a.sp + '=' + decryptSig(a.s);
     };
     async function playlist(id) {
+        var asd = document.createElement('div');
+        var iwindow = window.open(URL.createObjectURL(new Blob([new Uint8Array([0xEF,0xBB,0xBF]), '<p>Please wait, progress: <div id="progress">fetching main page</div>'], {type : 'text/html; chartset=utf-8'})), "Download", "width=600,height=600");
         try {
             var mainPage = await fetch('https://www.youtube.com/playlist?list=' + id);
             var body = await mainPage.text();
@@ -82,14 +84,18 @@
             var pageInfo = eval('(function() {return ' + pageInfo + '})();');
             var info = pageInfo.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].playlistVideoListRenderer.contents;
         } catch(e) {
+            iwindow.document.getElementById('progress').innerHTML = 'Error';
             error(e);
             return;
         };
         var baseURL = 'https://www.youtube.com/watch?v=';
-        var blobData = '<p>YouTube Downloader Version 1.9</p>\n\n<p>Title: ' + pageInfo.metadata.playlistMetadataRenderer.title + '</p>\n\n';
+        var blobData = '<p>YouTube Downloader Version 2.0</p>\n\n<p>Title: ' + pageInfo.metadata.playlistMetadataRenderer.title + '</p>\n\n';
         blobData += '<style>diz {width: 119px; border: solid 1px; float: left; padding: 10px 0;}</style>\n';
-        blobData += '<script>function updateUI(e) {var a=document.getElementsByName("a");var b=document.getElementsByName("b");var c=document.getElementsByName("c");for (var i=0; i<a.length; i++) {if (e == "a") {a[i].style="display:block;";} else {a[i].style="display:none;";};};for (var i=0; i<b.length; i++) {if (e == "b") {b[i].style="display:block;";} else {b[i].style="display:none;";};};for (var i=0; i<c.length; i++) {if (e == "c") {c[i].style="display:block;";} else {c[i].style="display:none;";};};};function updateUIa() {updateUI("a")};function updateUIb() {updateUI("b")};function updateUIc() {updateUI("c")};</script>\n';
+        var script = document.createElement('script');
+        script.innerHTML = 'function updateUI(e) {var a=document.getElementsByName("a");var b=document.getElementsByName("b");var c=document.getElementsByName("c");for (var i=0; i<a.length; i++) {if (e == "a") {a[i].style="display:block;";} else {a[i].style="display:none;";};};for (var i=0; i<b.length; i++) {if (e == "b") {b[i].style="display:block;";} else {b[i].style="display:none;";};};for (var i=0; i<c.length; i++) {if (e == "c") {c[i].style="display:block;";} else {c[i].style="display:none;";};};};function updateUIa() {updateUI("a")};function updateUIb() {updateUI("b")};function updateUIc() {updateUI("c")};\n';
+        asd.appendChild(script);
         blobData += '<nav style="text-align: center;"><a href="javascript:void(0);" onClick="javascript:updateUIa()"><diz>Video & Audio</diz></a><a href="javascript:void(0);" onClick="javascript:updateUIb()"><diz>Only Video</diz></a><a href="javascript:void(0);" onClick="javascript:updateUIc()"><diz>Only Audio</diz></a></nav>\n<br><br><br>\n';
+        iwindow.document.getElementById('progress').innerHTML = 'Downloading 0/'+info.length;
         for (var q=0; q<info.length; q++) {
             var error = false;
             var videoNum = q + 1;
@@ -151,9 +157,13 @@ videoTitle.replaceAll(' ', '+') + '">Download</a></p>\n';
                     blobData += '<br>';
                 };
             };
+            iwindow.document.getElementById('progress').innerHTML = 'Downloading '+(q+1)+'/'+info.length;
         };
-        var BOM = new Uint8Array([0xEF,0xBB,0xBF]);
-        window.open(URL.createObjectURL(new Blob([BOM, blobData], {type : 'text/html; chartset=utf-8'})), "Download", "width=600,height=600");
+        iwindow.document.body.innerHTML = '';
+        var rew = document.createElement('div');
+        rew.innerHTML = blobData;
+        asd.appendChild(rew);
+        iwindow.document.body.appendChild(asd);
     };
     async function membersOnlyPlaylist(){
             const channelId = await async function () {
@@ -205,7 +215,7 @@ videoTitle.replaceAll(' ', '+') + '">Download</a></p>\n';
     };
     async function gotVideoInfo(info) {
         if (! info.streamingData) {
-            alert('[ytdl] This video requires membership');
+            alert('[ytdl] There are restrictions preventing you from viewing this video');
             return
         };
         try {
@@ -231,7 +241,7 @@ videoTitle.replaceAll(' ', '+') + '">Download</a></p>\n';
                 adaptiveUrls[i].url = await decryptURL(a);
             };
         };
-        var blobData = '<p>YouTube Downloader Version 1.9</p>\n\n<p>Title: ' + videoTitle + '</p>\n\n';
+        var blobData = '<p>YouTube Downloader Version 2.0</p>\n\n<p>Title: ' + videoTitle + '</p>\n\n';
         if (hasEncrypted) {
             blobData += '<p>URLs may not work, report an issue if it does not work.</p>\n';
         };
@@ -261,10 +271,9 @@ videoTitle.replaceAll(' ', '+') + '">Download</a></p>\n\n';
         try {
             var response = await fetch('https://raw.githack.com/ethanaobrien/youtube-downloader/main/version.json');
             var body = await response.text();
-            var usingVersion = '1.9';
+            var usingVersion = 2;
             var version = JSON.parse(body);
         } catch(e) {
-            error(e);
             return;
         };
         if (usingVersion < version.current_version) {
