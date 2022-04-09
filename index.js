@@ -8,7 +8,7 @@ function minify(source){
     return UglifyJS.minify(ast).code;
 }
 var min = encodeURI(minify(code));
-var result = '<a href="javascript:(function(){;' + min + ';})()">Youtube downloader</a>';
+var result = '<a href="javascript:(function(){;' + min + ';})()" class="btn" style="cursor: move;">Youtube downloader</a>';
 
 fs.writeFileSync('out.html', result);
 
