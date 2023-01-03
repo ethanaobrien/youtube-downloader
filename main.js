@@ -304,7 +304,9 @@ videoTitle.replaceAll(' ', '+') + '">Download</a></p>\n';
             var urls = info.streamingData.formats;
             var adaptiveUrls = info.streamingData.adaptiveFormats;
             var videoTitle = info.videoDetails.title;
-            var captions = info.captions.playerCaptionsTracklistRenderer.captionTracks;
+            try {
+                var captions = info.captions.playerCaptionsTracklistRenderer.captionTracks;
+            } catch(e) {}
         } catch(e) {
             error(e);
             return;
